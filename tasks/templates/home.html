@@ -6,24 +6,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">Task Manager</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <h1>Task Management</h1>
         <div class="task-section">
-            <h2>Tasks</h2>
-            <ul>
+            <div class="task-cards" id="task-list">
                 {% for task in tasks %}
-                    <li>
-                        <strong>{{ task.name }}</strong>
-                        <p>{{ task.description }}</p>
+                    <div class="task-card" data-task-id="{{ task.id }}">
+                        <h3 class="{% if task.is_completed %}completed{% endif %}">
+                            <button class="circle-button update-task-status" data-task-id="{{ task.id }}">
+                                {% if task.is_completed %}✔{% endif %}
+                            </button>
+                            {{ task.name }}
+                        </h3>
                         <p>Deadline: {{ task.deadline }}</p>
-                        <p>Created at: {{ task.created_at }}</p>
-                        <p>Updated at: {{ task.updated_at }}</p>
-                    </li>
+                        <button class="delete-task" data-task-id="{{ task.id }}">Delete</button>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
+        </div>
+        <div class="add-task-section">
+            <h2>Add Task</h2>
+            <form id="add-task-form" method="post">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Task Name" required style="background-color: #333; color: #f0f0f0; border: 1px solid #444;">
+                <input type="datetime-local" name="deadline" style="background-color: #333; color: #f0f0f0; border: 1px solid #444;">
+                <button type="submit" style="background-color: #ffcc00; color: #1a1a1a;">Add Task</button>
+            </form>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            // Handle add task form submission
+            $('#add-task-form').submit(function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: "{% url 'add_task' %}",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function(response){
+                        $('#task-list').append(
+                            `<div class="task-card" data-task-id="${response.id}">
+                                <h3><button class="circle-button update-task-status" data-task-id="${response.id}"></button> ${response.name}</h3>
+                                <p>Deadline: ${response.deadline}</p>
+                                <button class="delete-task" data-task-id="${response.id}">Delete</button>
+                            </div>`
+                        );
+                        $('#add-task-form')[0].reset();
+                    }
+                });
+            });
+
+            // Handle update task status
+            $(document).on('click', '.update-task-status', function(){
+                const taskId = $(this).data('task-id');
+                const $button = $(this);
+                $.ajax({
+                    url: "{% url 'update_task_status' %}",
+                    type: "POST",
+                    data: {
+                        'task_id': taskId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            const $taskCard = $(`.task-card[data-task-id="${taskId}"] h3`);
+                            $taskCard.toggleClass('completed');
+                            $button.html($taskCard.hasClass('completed') ? '✔' : '');
+                        }
+                    }
+                });
+            });
+
+            // Handle delete task
+            $(document).on('click', '.delete-task', function(){
+                const taskId = $(this).data('task-id');
+                $.ajax({
+                    url: "{% url 'delete_task' %}",
+                    type: "POST",
+                    data: {
+                        'task_id': taskId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            $(`.task-card[data-task-id="${taskId}"]`).remove();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
