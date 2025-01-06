@@ -6,6 +6,7 @@ class Task(models.Model):
     description = models.TextField(null=True, blank=True)
     deadline = models.DateTimeField(timezone.now, null=True, blank=True)
     is_completed = models.BooleanField(default=False)
+    email_reminder = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

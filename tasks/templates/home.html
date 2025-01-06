@@ -39,6 +39,9 @@
                 {% csrf_token %}
                 <input type="text" name="name" placeholder="Task Name" required style="background-color: #333; color: #f0f0f0; border: 1px solid #444;">
                 <input type="datetime-local" name="deadline" style="background-color: #333; color: #f0f0f0; border: 1px solid #444;">
+                <label for="email_reminder">
+                    <input type="checkbox" name="email_reminder" id="email_reminder"> Email Reminder
+                </label>
                 <button type="submit" style="background-color: #ffcc00; color: #1a1a1a;">Add Task</button>
             </form>
         </div>
@@ -49,10 +52,18 @@
             // Handle add task form submission
             $('#add-task-form').submit(function(event){
                 event.preventDefault();
+                const formData = $(this).serializeArray();
+                formData.push({ name: 'csrfmiddlewaretoken', value: '{{ csrf_token }}' });
+                if ($('#email_reminder').is(':checked')) {
+                    formData.push({ name: 'email_reminder', value: 'on' });
+                } else {
+                    formData.push({ name: 'email_reminder', value: '' });
+                }
+
                 $.ajax({
                     url: "{% url 'add_task' %}",
                     type: "POST",
-                    data: $(this).serialize(),
+                    data: $.param(formData),
                     success: function(response){
                         $('#task-list').append(
                             `<div class="task-card" data-task-id="${response.id}">
