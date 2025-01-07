@@ -1,84 +1,62 @@
 
 
-# Python Project
+# # Django Task Management Project
 
-This is a Python project that utilizes Pipenv for dependency management and virtual environment setup.
+## Description
+This is a Django-based task management application that allows users to manage their tasks. Users can create, update, delete, and mark tasks as completed. The application also supports email reminders for tasks, sending an immediate reminder upon task creation and another reminder one day before the task deadline.
 
-## Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-- You have Python installed (preferably version 3.8 or higher).
-- You have Pipenv installed. If not, you can install it using `pip install pipenv`.
+## Features
+- Add new tasks with a deadline and optional email reminder
+- Mark tasks as completed
+- Delete tasks
+- Send immediate email reminders upon task creation
+- Send email reminders one day before the task deadline
+- Task status update without page refresh using AJAX
+- User-friendly admin panel with task management features
 
 ## Installation
 
-To set up the project locally, follow these steps:
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/yourusername/task_management_project.git
+    cd task_management_project
+    ```
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
-   ```
+2. **Set up a virtual environment:**
+    ```bash
+    pipenv install
+    ```
 
-2. Install the dependencies:
-   ```sh
-   pipenv install
-   ```
+3. **Activate the virtual environment:**
+    ```bash
+    pipenv shell
+    ```
 
-3. (Optional) If you have a `requirements.txt` file, you can install the dependencies from it:
-   ```sh
-   pipenv install -r requirements.txt
-   ```
+4. **Install the required dependencies:**
+    ```bash
+    pipenv install -r requirements.txt
+    ```
 
-## Usage
+5. **Apply the database migrations:**
+    ```bash
+    python manage.py migrate
+    ```
 
-To activate the virtual environment and start working on the project, use the following command:
-```sh
-pipenv shell
-```
+6. **Create a superuser for the admin panel:**
+    ```bash
+    python manage.py createsuperuser
+    ```
 
-To run your Python scripts within the virtual environment, simply use:
-```sh
-python your_script.py
-```
+7. **Run the development server:**
+    ```bash
+    python manage.py runserver
+    ```
 
-## Dependencies
+## Used Technologies
+- **Django:**  
+- **SQLLite:** 
+- **HTML/CSS**
+- **AJAX**
 
-This project uses the following main dependencies:
-- `numpy`
-- `pandas`
-- `requests`
 
-You can find the full list of dependencies in the `Pipfile` or `Pipfile.lock` files.
 
-## Generating `requirements.txt`
-
-To generate a `requirements.txt` file from the Pipenv environment, use the following command:
-```sh
-pipenv lock -r > requirements.txt
-```
-
-## Contributing
-
-If you want to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add feature'`).
-5. Push to the branch (`git push origin feature/your-feature`).
-6. Create a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-- Hat tip to anyone whose code was used.
-- Inspiration.
-- etc.
-```
-
-Feel free to customize this template to better fit the specifics of your project. Let me know if you need any additional sections or information! 😊
